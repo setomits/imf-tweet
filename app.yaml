@@ -1,0 +1,13 @@
+application: imf-tweet
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /images
+  static_dir: static/images
+- url: /remove
+  script: taskworker.py
+  login: admin
+- url: /.*
+  script: index.py

@@ -1,0 +1,18 @@
+{% extends "_base.html" %}
+{% block content %}
+    <form method="POST" action="/update">
+      <div class="input">
+	<textarea name="message" required autofocus maxLength="140"></textarea>
+      </div>
+      <div class="input">
+	このつぶやきは
+        <select name="delay" size="1">
+	  {% for delay in delays %}
+  	  <option value="{{ delay }}">{{ delay }}</option>
+	  {% endfor %}
+	</select>
+	分後に <input type="submit" value="消滅する" />
+      </div>
+    </form>
+    <p class="error">{{ error }}</p>
+{% endblock %}

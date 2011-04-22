@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>このつぶやきは自動的に消滅する</title>
+    <style type="text/css">
+      body { margin: 0; padding: 20px; }
+      a { color: #222; }
+      img { border: 0; }
+
+      div.user_info, div.footer {
+        color: #222;
+        text-align: right;
+        margin: 20px auto;
+      {% ifequal device "pc" %}
+        width: 600px;
+      {% endifequal %}
+      }
+
+      div.logo {
+        margin: 20px auto;
+      {% ifequal device "pc" %}
+        width: 640px;
+      {% else %}
+        width: 128px;
+      {% endifequal %}
+      }
+
+      div.input {
+        margin: auto;
+        text-align: right;
+      {% ifequal device "pc" %}
+        width: 400px;
+      {% endifequal %}
+      }
+
+      div.input textarea { width: 100%; }
+
+      p.error {
+        padding: 10px;
+        color: #DD0000;
+      {% ifequal device "pc" %}
+        width: 400px;
+      {% endifequal %}
+      }
+
+      p.footer {
+        margin-top: 60px;
+        padding: 40px;
+        border-top: 1px solid #111;
+        text-align: right;
+      }
+    </style>
+    {% ifequal device "mobile" %}
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="viewport"
+	  content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+    {% endifequal %}
+  </head>
+  <body>
+    <div class="user_info">
+      {% if user_info %}
+      <img src="{{ user_info.image }}" width="24" height="24"
+	   alt="{{ user_info.name }}" />
+      <strong>{{ user_info.name }}</strong>
+      | <a href="/auth/logout">Logout</a> |
+      {% else %}
+      <a href="/auth/login">
+	<img src="/images/login.gif" width="118" height="20" alt="Login" />
+      </a>
+      {% endif %}
+      <a href="http://twitter.com/share" class="twitter-share-button"
+	 data-url="http://imf-tweet.appspot.com/" data-count="none"
+	 data-text="自動的に消滅するツイートができる！" data-lang="ja">Tweet</a>
+      <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+    </div>
+    <div class="logo">
+      <a href="/home">
+	{% ifequal device "pc" %}
+	<img src="/images/imf.png" width="640" height="80"
+	{% else %}
+	<img src="/images/imf_m.png" width="128" height="70"
+	{% endifequal %}
+	     alt="このつぶやきは自動的に消滅する" />
+      </a>
+    </div>
+{% block content %}
+{% endblock %}
+    <p class="footer">
+      This app is developed by <a href="http://twitter.com/setomits" target="_blank">@setomits</a>.<br />
+      Powered by <a href="https://github.com/joshthecoder/tweepy" target="_blank">tweepy</a>, <a href="http://code.google.com/appengine/" target="_blank">Google App Engine</a>(Python) and <a href="http://twitter.com/" target="_blank">Twitter</a>.
+    </p>
+  </body>
+</html>
