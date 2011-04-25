@@ -132,7 +132,7 @@ class UpdateHandler(webapp.RequestHandler):
         
         if len(message) == 0:
             error = '文字が入力されていません。'
-        elif len(message) > 140:
+        elif len(message) > 119:
             error = '入力文字数が多過ぎます。'
         else:
             error = ''
@@ -142,6 +142,8 @@ class UpdateHandler(webapp.RequestHandler):
         else:
             delay = 1
 
+        ps = u' なお、このつぶやきは%d分後に消滅する。' % delay
+
         if error:
             _render(self, 'home.html',
                     {'user_info': user_info, 'delays': DELAYS, 'error': error})
@@ -149,7 +151,7 @@ class UpdateHandler(webapp.RequestHandler):
             auth = _oauth_handler()
             auth.set_access_token(user_info.acc_key, user_info.acc_sec)
             api = tweepy.API(auth_handler = auth)
-            tweet = api.update_status(message)
+            tweet = api.update_status(message + ps)
 
             taskqueue.add(url = '/remove',
                           params = {'acc_key': user_info.acc_key,
