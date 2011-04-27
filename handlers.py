@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 
+from Cookie import SimpleCookie
+import hashlib
 import logging
 import os
 
@@ -55,6 +57,10 @@ def _oauth_handler():
     return tweepy.OAuthHandler(consumer_key = CON_KEY,
                                consumer_secret = CON_SEC)
 
+def _sha512(acc_key):
+    return hashlib.sha512(CON_KEY + acc_key).hexdigest()
+
+
 ##
 class HomeHandler(webapp.RequestHandler):
     def get(self):
@@ -69,6 +75,17 @@ class HomeHandler(webapp.RequestHandler):
 class AuthHandler(webapp.RequestHandler):
     def get(self, mode = ''):
         if mode == 'login':
+            if 'allowed' in self.request.cookies and \
+                    self.request.cookies['allowed'].count('_'):
+                _twitter_id, _login_hash = \
+                    self.request.cookies['allowed'].split('_', 1)
+        
+                user_info = UserInfo.all().filter('twitter_id =', _twitter_id).get()
+                if user_info and _sha512(user_info.acc_key) == _login_hash:
+                    self.session = Session()
+                    self.session['twitter_id'] = _twitter_id
+                    return self.redirect('/home')
+
             auth = _oauth_handler()
             auth_url = auth.get_authorization_url()
             memcache.set(auth.request_token.key,
@@ -99,6 +116,11 @@ class AuthHandler(webapp.RequestHandler):
             self.session = Session()
             self.session.delete_item('twitter_id')
             self.session['twitter_id'] = str(me.id)
+
+            c = SimpleCookie()
+            c['allowed'] = '%d_%s' % (me.id, _sha512(acc_token.key))
+            c['allowed']['expires'] = 86400 * 10
+            self.response.headers.add_header('Set-Cookie', c.output(header = ''))
 
             return self.redirect('/home')
 
