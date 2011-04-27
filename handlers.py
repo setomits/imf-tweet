@@ -16,6 +16,8 @@ import tweepy
 from models import UserInfo
 
 DELAYS = [1, 3, 5, 10, 30, 60]
+CON_KEY = 'xxxxxxxxxxxxxxxxxxxxxx'
+CON_SEC = 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy'
 
 ##
 def _login_user(handler):
@@ -48,12 +50,10 @@ def _render(handler, tname, values = {}):
     else:
         return False
 
-def _oauth_handler():
-    _con_key = 'xxxxxxxxxxxxxxxxxxxxxx'
-    _con_sec = 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy'
 
-    return tweepy.OAuthHandler(consumer_key = _con_key,
-                               consumer_secret = _con_sec)
+def _oauth_handler():
+    return tweepy.OAuthHandler(consumer_key = CON_KEY,
+                               consumer_secret = CON_SEC)
 
 ##
 class HomeHandler(webapp.RequestHandler):
