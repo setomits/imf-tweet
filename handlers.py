@@ -34,12 +34,16 @@ def _render(handler, tname, values = {}):
                             'templates/' + tname)
 
     _ua = handler.request.environ['HTTP_USER_AGENT'].lower()
-    for s in ('iphone', 'android', 'docomo', 'softbank'):
-        if _ua.find(s) > -1:
-            device = 'mobile'
-            break
+    if _ua.find('iphone') > -1 or _ua.find('iemobile') > -1 or \
+            (_ua.find('android') > -1 and _ua.find('mobile') > -1):
+        device = 'smartphone'
     else:
-        device = 'pc'
+        for s in ('docomo', 'kddi', 'softbank'):
+            if _ua.find(s) > -1:
+                device = 'mobile'
+            break
+        else:
+            device = 'pc'
 
     if os.path.isfile(tmplpath):
         newval = dict(values)
