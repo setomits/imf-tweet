@@ -41,7 +41,7 @@ def _render(handler, tname, values = {}):
         for s in ('docomo', 'kddi', 'softbank'):
             if _ua.find(s) > -1:
                 device = 'mobile'
-            break
+                break
         else:
             device = 'pc'
 
@@ -123,6 +123,7 @@ class AuthHandler(webapp.RequestHandler):
 
             c = SimpleCookie()
             c['allowed'] = '%d_%s' % (me.id, _sha512(acc_token.key))
+            c['allowed']['path'] = '/auth'
             c['allowed']['expires'] = 86400 * 10
             self.response.headers.add_header('Set-Cookie', c.output(header = ''))
 
